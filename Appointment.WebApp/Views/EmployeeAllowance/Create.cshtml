@@ -1,0 +1,162 @@
+﻿@{
+    ViewBag.Title = "Add-Employee-Allowance";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<style>
+    #amount {
+        color: red;
+    }
+</style>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Allowances</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" id="clear" name="myForm">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <input value="@ViewBag.EmployeeId" id="EmployeeId" name="EmployeeId" hidden />
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Allowance</label>
+                                        <select class="form-control selectpicker show-menu-arrow" id="Allowance" name="Allowance" required>
+                                            <option value="0" selected disabled>--Select Allowance--</option>
+                                            @foreach (var item in ViewBag.Allowance)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label>Amount</label><span id="amount"></span>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">Rs</span>
+                                        </div>
+                                        <input type="text" class="form-control clear" id="Amount" name="Amount" required placeholder="Amount">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6"></div>
+                                <div class="col-md-6">
+                                    <input type="button" id="addtolist" class="add-row btn btn-dark" value="Add To List" style="margin-bottom: 20px !important; float: right;">
+                                </div>
+                            </div>
+                            <table class="table" id="tableAllowance" name="clear">
+                                <thead class="">
+                                    <tr>
+                                        <th scope="col" style="display:none">AllowanceId</th>
+                                        <th scope="col" >Allowance</th>
+                                        <th scope="col" >Amount</th>
+                                        <th scope="col" >ACTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                            <button type="button" class="delete-row btn float-right" style="color:red;">Delete Row</button>
+
+                            <div class="em-separator separator-dashed"></div>
+                            <div class="text-right">
+                                <button type="button" id="btnSave" name="save" class="btn btn-info">Save</button>
+                                <button class="btn btn-shadow" onclick="window.location.href='/EmployeeAllowance/Allowances/@ViewBag.EmployeeId'">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $('#Allowance').change(function () { $('.clear').val('') });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".add-row").click(function () {
+            var EmployeeId = $("#EmployeeId").val();
+            var AllowanceId = $("#Allowance option:selected").val();
+            var Allowance = $("#Allowance option:selected").text();
+            var Amount = $("#Amount").val();
+
+
+            if (AllowanceId == 0)
+            {
+                Swal.fire('Allowance','Please Select Allowance');
+               return false;
+            }
+            if (Amount == "")
+            {
+               Swal.fire('Amount','Please Enter Amount');
+               return false;
+            }
+
+            var markup = "<tr><td style='Display: none;'>" + EmployeeId + "</td><td style='Display: none;'>" + AllowanceId + "</td><td>" + Allowance + "</td><td>" + Amount + "</td><td><input type='checkbox' name='record'></tr>";
+            $("table tbody").append(markup);
+        });
+
+        $(".delete-row").click(function () {
+            $("table tbody").find('input[name="record"]').each(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parents("tr").remove();
+                }
+            });
+        });
+    });
+
+
+
+    $("body").on("click", "#btnSave", function () {
+        var Allowances = new Array();
+        $("#tableAllowance TBODY TR").each(function () {
+            var row = $(this);
+            var Allowance = {};
+            Allowance.EmployeeId = row.find("TD").eq(0).html();
+            Allowance.AllowanceId = row.find("TD").eq(1).html();
+            Allowance.Allowance = row.find("TD").eq(2).html();
+            Allowance.Amount = row.find("TD").eq(3).html();
+            Allowances.push(Allowance);
+        });
+
+
+        if (Allowances.length == 0) {
+                Swal.fire('Sorry','Please add atleast one item in Allowances');
+                return false;
+        }
+
+        console.log(Allowances);
+
+        $.ajax({
+            type: "POST",
+            url: "/EmployeeAllowance/Create",
+            data: JSON.stringify(Allowances),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function () {
+                Swal.fire('Records Inserted Successfully');
+                window.location.href ='@Url.Action("Employees","Home")';
+            }
+        });
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#Amount").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                $("#amount").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+    });
+
+
+</script>

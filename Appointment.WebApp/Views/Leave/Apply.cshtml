@@ -1,0 +1,117 @@
+﻿@model VUPayRoll.ViewModel.LeaveViewModel
+@{
+    ViewBag.Title = "Apply for Leave";
+}
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Leave Management</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" id="clear" method="post" action="Apply">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Leave Type</label>
+                                                <select class="form-control selectpicker show-menu-arrow" id="LeaveType" name="LeaveType" required data-live-search="true">
+                                                    <option value="" selected disabled>--Select Leave Type--</option>
+                                                    @foreach (var item in ViewBag.lt)
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <textarea rows="1" placeholder="Description" type="text" class="form-control clear" id="Description" name="Description" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Short Leave</label>
+                                                <select class="form-control" id="status" name="LeaveStatus" required data-live-search="true">
+                                                    <option value="" selected disabled>--Select Leave Status --</option>
+                                                    @foreach (var item in ViewBag.ls)
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="Short" style="display:none!important">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label></label>
+                                                <select class="form-control" id="hfDay" name="LeavehfDay" required data-live-search="true">
+                                                    <option value="" selected disabled>--Select Day --</option>
+                                                    @foreach (var item in ViewBag.lhf)
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label></label>
+                                                <input type="date" class="form-control clear" id="Date" name="Date" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row"  id="long" style="display:none!important">
+                                        <div class="col-sm-4">
+                                            <div class="form-group" >
+                                                <label>Date Range</label>
+                                                <input type="text" class="form-control" id="daterange" name="DateRange">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="em-separator separator-dashed"></div>
+                            <div class="text-right">
+                                <button class="btn btn-gradient-01" type="submit">Next </button>
+                                <button class="btn btn-shadow" onclick="window.location.href='/Dashboard/Dboard'">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#status").change(function () {
+        var selected_option = $('#status').val();
+        if (selected_option === '0') {
+
+            $("#Short").show("slow");
+            $("#daterange").prop('disabled', true);
+
+            $("#long").hide("slow");
+            $("#hfDay").prop('disabled', false);
+            $("#Date").prop('disabled', false);
+        }
+
+        if (selected_option === '1') {
+
+            $("#long").show("slow");
+            $("#daterange").prop('disabled', false);
+
+            $("#Short").hide("slow");
+            $("#hfDay").prop('disabled', true);
+            $("#Date").prop('disabled', true);
+        }
+
+    })
+</script>

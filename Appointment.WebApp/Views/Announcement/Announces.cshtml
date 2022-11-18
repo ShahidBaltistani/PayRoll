@@ -1,0 +1,136 @@
+﻿@model IEnumerable<VUPayRoll.ViewModel.AnnouncementViewModel>
+@{
+    ViewBag.Title = "Announces";
+}
+<link href="~/Content/Pagination/simplePagination.css" rel="stylesheet" />
+<script src="~/Content/Pagination/jquery.simplePagination.js"></script>
+<script type="text/javascript">
+        jQuery(function ($) {
+            var items = $("#content #myTable #contentrow");
+            var numItems = items.length;
+            var perPage = 5;
+            items.slice(perPage).hide();
+            $("#pagination").pagination({
+                items: numItems,
+                itemsOnPage: perPage,
+                prevText: '<',
+                nextText: '>',
+                cssStyle: "light-theme",
+                onPageClick: function (pageNumber) {
+                    var showFrom = perPage * (pageNumber - 1);
+                    var showTo = showFrom + perPage;
+                    items.hide()
+                        .slice(showFrom, showTo).show();
+                }
+            });
+        });
+</script>
+<script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+</script>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Announcements</h4>
+                    </div>
+                    <div class="widget-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <span style="width:100px;">
+                                    <span class="badge-text badge-text-small info">
+                                        <a href="@Url.Action("Announce_Create","Announcement")" style="color:white">ADD</a>
+                                    </span>
+                                </span>
+                            </div>
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control mb-3" id="myInput" type="text" placeholder="Search ...">
+                            </div>
+                        </div>
+                        <table class="table table-hover mb-0" id="content">
+                            <thead>
+                                <tr>
+                                    <th scope="col">
+                                        Title
+                                    </th>
+                                    <th scope="col">
+                                        Body
+                                    </th>
+                                    <th scope="col">
+                                        Status
+                                    </th>
+                                    <th scope="col">
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="myTable">
+                                @if (Model.Count() == 0)
+                                {
+                                    <tr>
+                                        <td colspan="3" style="text-align:center;font-size:12px;font-weight:bold;">
+                                            No Data...
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr id="contentrow">
+                                            <td>
+                                                <span style="width:100px;">
+                                                    <span class="badge-text badge-text-small info">
+                                                        @item.Title
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @item.Body
+                                            </td>
+                                            <td class="td-actions">
+                                                @if (item.IsDelete == false)
+                                                {
+                                                    <span style="width:100px;">
+                                                        <span class="badge-text badge-text-small success">
+                                                            Active
+                                                        </span>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span style="width:100px;">
+                                                        <span class="badge-text badge-text-small danger">
+                                                            In-Active
+                                                        </span>
+                                                    </span>
+                                                }
+                                            </td>
+                                            <td class="td-actions">
+                                                <a href="@Url.Action("Delete","Announcement",new { id = item.Id})" style="text-decoration:none;color:red">
+                                                    <i class="la la-close delete"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                <tr id="pagination" class="noprint" style="margin-top:40px"></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

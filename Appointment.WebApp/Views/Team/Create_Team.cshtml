@@ -1,0 +1,76 @@
+﻿@{
+    ViewBag.Title = "Create_Team";
+}
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Team Management</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" method="post">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-sm-5">
+                                            <div class="form-group">
+                                                <label>Team_Lead</label>
+                                                <select class="form-control selectpicker show-menu-arrow" id="TeamLeadid" name="" required data-live-search="true">
+                                                    <option value="" selected disabled>--Select Team_Lead name--</option>
+                                                    @foreach (var item in ViewBag.Teamleads)
+                                                    {
+                                                        <option value="@item.Id">@item.FirstName @item.LastName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-7">
+                                            <div class="form-group">
+                                                <label>Select Multiple Employees</label>
+                                                <select class="form-control selectpicker show-menu-arrow" id="Employeesids" multiple required data-live-search="true">
+                                                    @foreach (var item in ViewBag.employees)
+                                                    {
+                                                        <option value="@item.Id">@item.FirstName @item.LastName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="em-separator separator-dashed"></div>
+                            <div class="text-right">
+                                <button class="btn btn-gradient-01" type="submit" id="btn">Next </button>
+                                <button class="btn btn-shadow" onclick="window.location.href='/Team/TeamList'">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#btn").click(function (e) {
+
+        var tl = $('#TeamLeadid').val();
+        var empids = $('#Employeesids').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Team/Create_Team",
+            data:
+            {
+                TeamLead: tl,
+                Employees: empids
+            },
+            success: function () {
+                window.location.href ='@Url.Action("TeamList","Team")';
+            }
+        });
+    });
+</script>

@@ -1,0 +1,149 @@
+﻿@model VUPayRoll.ViewModel.EmployeeViewModel
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using VUPayRoll.WebApp;
+<style>
+
+    #errmsg, #Ziperrmsg, #CNoerrmsg, #Hphoneerrmsg, #Mobileerrmsg {
+        color: red;
+    }
+</style>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <div id="accordion-icon-right" class="accordion">
+                            <div class="widget">
+                                <a class="card-header collapsed d-flex align-items-center" data-toggle="collapse" href="#IconRightCollapseOne" aria-expanded="true">
+                                    <div class="card-title w-100">1. Personnal Informations</div>
+                                </a>
+                                <div id="IconRightCollapseOne" class="card-body collapse show" data-parent="#accordion-icon-right">
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center"><b>Name</b></div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.FirstName @Model.LastName</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Gender</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Gender.ToString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">CNIC</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.CNIC</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Date of Birth</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.DOB.GetValueOrDefault().Date.ToShortDateString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Alternate Email</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.AlternateEmail</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Official Email</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.OfficialEmail</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Phone</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Mobile</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Religion</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Religions.Name</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Marital Status</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.MaritalStatus.ToString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Nationality</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Nationality.Name</div>
+                                    </div>
+                                </div>
+                                <a class="card-header collapsed d-flex align-items-center" data-toggle="collapse" href="#IconRightCollapseTwo">
+                                    <div class="card-title w-100">2. Address Info</div>
+                                </a>
+                                <div id="IconRightCollapseTwo" class="card-body collapse" data-parent="#accordion-icon-right">
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Street Address</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.StreetAddress</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Country</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Cities.Country.Name</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">City</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Cities.Name</div>
+                                    </div>
+                                </div>
+                                <a class="card-header collapsed d-flex align-items-center" data-toggle="collapse" href="#IconRightCollapseThree">
+                                    <div class="card-title w-100">3. Office Info</div>
+                                </a>
+                                <div id="IconRightCollapseThree" class="card-body collapse" data-parent="#accordion-icon-right">
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Hire Date</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.HireDate.GetValueOrDefault().Date.ToShortDateString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Joining Date</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.JoiningDate.GetValueOrDefault().Date.ToShortDateString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Probation Period </div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.ProbationPeriod</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Speciality</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Skill</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Basic Salary</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.BasicSalary</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Designation</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.DesignationTypes.Name</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Shift</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Shift.ToString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Department</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.Department.ToString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Pay Type</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.PayType.ToString()</div>
+                                    </div>
+                                </div>
+                                <a class="card-header collapsed d-flex align-items-center" data-toggle="collapse" href="#IconRightCollapseFour">
+                                    <div class="card-title w-100">4. Account Info</div>
+                                </a>
+                                <div id="IconRightCollapseFour" class="card-body collapse" data-parent="#accordion-icon-right">
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Payment Method</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.SalaryPaymentMethod.ToString()</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Bank Name</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.BankName</div>
+                                    </div>
+                                    <div class="form-group row mb-5">
+                                        <div class="col-sm-3 form-control-label d-flex align-items-center">Account No.</div>
+                                        <div class="col-sm-8 form-control-plaintext">@Model.AccountNo</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="/Home/Employees"><span style="color:blue!important"><u><i class="la la-arrow-circle-left"></i>Back</u></span></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

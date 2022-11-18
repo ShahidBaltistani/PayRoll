@@ -1,0 +1,249 @@
+﻿@{
+    ViewBag.Title = "Add-Dependent";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Dependents</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" id="clear">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>First Name</label><span id="errmsg1" style="color:red;"></span>
+                                                <input size="50" placeholder="First Name" type="text" class="form-control clear" id="FirstName" name="FirstName" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Last Name</label><span id="errmsg2" style="color:red;"></span>
+                                                <input placeholder="Last Name" type="text" class="form-control clear" id="LastName" name="LastName" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>CNIC</label><span id="errmsg" style="color:red;"></span>
+                                                <input placeholder="CNIC" type="number" class="form-control clear" maxlength="15" id="CNIC" name="CNIC" required />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Mobile</label><span id="Mobileerrmsg" style="color:red;"></span>
+                                                <input placeholder="Mobile" type="number" class="form-control clear" id="Mobile" name="Mobile" required />
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Relationship</label>
+                                                <select class="form-control selectpicker show-menu-arrow" id="RelationshipType" name="RelationshipType" data-live-search="true" required>
+                                                    <option value="" selected disabled>--Select RelationshipType--</option>
+                                                    @foreach (var item in ViewBag.relationshipType)
+                                                    {
+                                                        <option class="rselect" value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Gender</label>
+                                                <select class="form-control selectpicker show-menu-arrow clear" id="Gender" name="Gender" data-live-search="true" required>
+                                                    <option value="" selected disabled>--Select Gender--</option>
+                                                    @foreach (var item in ViewBag.Gender)
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-4">
+                                            <div class="form-group">
+                                                <label>Marital Status</label>
+                                                <select class="form-control selectpicker show-menu-arrow clear" id="MaritalStatus" name="MaritalStatus" data-live-search="true" required>
+                                                    <option value="" selected disabled>--Select Marital Status--</option>
+                                                    @foreach (var item in ViewBag.MaritalStatus)
+                                                    {
+                                                        <option value="@item.Id">@item.Name</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <input value="@ViewBag.EmployeeId" id="EmployeeId" name="EmployeeId" hidden />
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-8">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group float-right">
+                                                <input type="button" class="add-row btn btn-dark" value="Add Row" style="margin-top: 85px !important;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table class="table" id="tableDependent">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" style="display:none">RelationshipTypeID</th>
+                                                <th scope="col">Relationship-Type</th>
+                                                <th scope="col">FirstName</th>
+                                                <th scope="col">LastName</th>
+                                                <th scope="col">CNIC</th>
+                                                <th scope="col" style="display:none">GenderID</th>
+                                                <th scope="col">Gender</th>
+                                                <th scope="col" style="display:none">MaritalStatusID</th>
+                                                <th scope="col">MaritalStatus</th>
+                                                <th scope="col">Mobile</th>
+                                                <th scope="col">ACTION</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="delete-row btn float-right" style="color:red;">Delete Row</button>
+
+
+
+                                    <div class="em-separator separator-dashed"></div>
+                                    <div class="text-right">
+                                        <button type="button" id="btnSave" class="btn btn-gradient-01">Save </button>
+                                        <button class="btn btn-shadow" onclick="window.location.href='/Dependent/Dependents/@ViewBag.EmployeeId'">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".add-row").click(function () {
+            var EmployeeInfoId = $("#EmployeeId").val();
+            var RelationshipTypeId = $("#RelationshipType option:selected").val();
+            var RelationshipType = $("#RelationshipType option:selected").text();
+            var FirstName = $("#FirstName").val();
+            var LastName = $("#LastName").val();
+            var CNIC = $("#CNIC").val();
+            var GenderId = $("#Gender option:selected").val();
+            var Gender = $("#Gender option:selected").text();
+            var MaritalStatusId = $("#MaritalStatus option:selected").val();
+            var MaritalStatus = $("#MaritalStatus option:selected").text();
+            var Mobile = $("#Mobile").val();
+
+            if (EmployeeInfoId == 0)
+            {
+               Swal.fire('Employee','Please Select Employee');
+               return false;
+            }
+            if (RelationshipTypeId == 0)
+            {
+               Swal.fire('RelationshipType','Please Select RelationshipType');
+               return false;
+            }
+            if (FirstName == "")
+            {
+               Swal.fire('FirstName','Please Select FirstName');
+               return false;
+            }
+            if (LastName == "")
+            {
+               Swal.fire('LastName','Please Select LastName');
+               return false;
+            }
+            if (CNIC == "")
+            {
+               Swal.fire('CNIC','Please Select CNIC');
+               return false;
+            }
+            if (GenderId == "")
+            {
+               Swal.fire('Gender','Please Select Gender');
+               return false;
+            }
+            if (MaritalStatusId == "")
+            {
+               Swal.fire('MaritalStatus','Please Select MaritalStatus');
+               return false;
+            }
+            if ( Mobile== "")
+            {
+               Swal.fire('Mobile','Please Select Mobile');
+               return false;
+            }
+            var markup = "<tr><td style='Display: none;'>" + EmployeeInfoId + "</td><td style='Display: none;'>" + RelationshipTypeId + "</td><td>" + RelationshipType + "</td><td>" + FirstName + "</td><td>" + LastName + "</td><td>" + CNIC + "</td><td style='Display: none;'>" + GenderId + "</td><td>" + Gender + "</td><td style='Display: none;'>" + MaritalStatusId + "</td><td>" + MaritalStatus + "</td><td>" + Mobile + "</td><td><input type='checkbox' name='record'></tr>";
+            $("table tbody").append(markup);
+        });
+
+        // Find and remove selected table rows
+        $(".delete-row").click(function () {
+            $("table tbody").find('input[name="record"]').each(function () {
+                if ($(this).is(":checked")) {
+                    $(this).parents("tr").remove();
+                }
+            });
+        });
+    });
+    //for input clear
+    //$('#RelationshipType').change(function () { $('.clear').val('') });
+
+    $("body").on("click", "#btnSave", function () {
+        debugger;
+        //Loop through the Table rows and build a JSON array.
+        var dependents = new Array();
+        $("#tableDependent TBODY TR").each(function () {
+            debugger;
+            var row = $(this);
+            var dependent = {};
+            dependent.EmployeeId = row.find("TD").eq(0).html();
+            dependent.RelationshipTypeId = row.find("TD").eq(1).html();
+            dependent.RelationshipType = row.find("TD").eq(2).html();
+            dependent.FirstName = row.find("TD").eq(3).html();
+            dependent.LastName = row.find("TD").eq(4).html();
+            dependent.CNIC = row.find("TD").eq(5).html();
+            dependent.GenderId = row.find("TD").eq(6).html();
+            dependent.Gender = row.find("TD").eq(7).html();
+            dependent.MaritalStatusId = row.find("TD").eq(8).html();
+            dependent.MaritalStatus = row.find("TD").eq(9).html();
+            dependent.Mobile = row.find("TD").eq(10).html();
+
+            dependents.push(dependent);
+        });
+
+
+        // For Check Empty List
+        if (dependents.length == 0) {
+                Swal.fire('Sorry','Please add atleast one item in dependents');
+                return false;
+        }
+
+        //Send the JSON array to Controller using AJAX.
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Dependent/Create",
+            data: JSON.stringify(dependents),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (r) {
+                Swal.fire('Records Inserted Successfully');
+                window.location.href ='@Url.Action("Employees","Home")';
+            }
+        });
+    });
+</script>

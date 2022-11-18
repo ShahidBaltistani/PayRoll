@@ -1,0 +1,283 @@
+﻿@{
+    ViewBag.Title = "ProjectNameManage";
+}
+<link href="~/Content/Pagination/simplePagination.css" rel="stylesheet" />
+<script src="~/Content/Pagination/jquery.simplePagination.js"></script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content #myTable #contentrow");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Projects</h4>
+                    </div>
+                    <div class="widget-body">
+                        <div class="btn-group" role="group" aria-label="Buttons Group">
+                            <button type="button" class="btn btn-info mb-2" data-toggle="modal" data-target="#myModal" onclick="clearTextBox();">Add Projects</button><br /><br />
+                            <button type="button" class="btn btn-outline-info mb-2"onclick="window.location.href='/ProjectManagement/ProjectManage'">Back</button>
+                        </div>
+                        <table class="table table-hover mb-2 text-center" id="content">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Name
+                                    </th>
+                                    <th>
+                                        Start Date
+                                    </th>
+                                    <th>
+                                        TFS Status Last_Updated
+                                    </th>
+                                    <th>
+                                        Team Lead
+                                    </th>
+                                    <th>
+                                        Language
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbody" id="myTable">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel">Add Projects</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <form autocomplete="off">
+                                        <div class="form-group">
+                                            <label for="Name">Name</label>
+                                            <input type="text" class="form-control" id="Name" placeholder="Name" />
+
+                                            <label for="StartDate">Start Date</label>
+                                            <input type="date" class="form-control" id="StartDate" placeholder="Start Date" />
+
+                                            <label for="TFSStatusLastUpdated">TFS Status Last_Updated</label>
+                                            <input type="date" class="form-control" id="TFS" name="TFSStatusLastUpdated" placeholder="TFS Status Last_Updated" />
+
+                                            <label for="TeamLead">Team Lead</label>
+                                            <input type="text" class="form-control" id="TeamLead" name="TeamLead" placeholder="Team Lead" />
+
+                                            <label>Language</label>
+                                            <select class="form-control selectpicker show-menu-arrow" id="Language" name="Language" required>
+                                                <option value="0" selected disabled>--Select Language--</option>
+                                                <option value=".Net MVC">.Net MVC</option>
+                                                <option value="PHP">PHP</option>
+                                            </select>
+
+
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="btnAdd" onclick="return Add();">Add</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //Load Data in Table when documents is ready
+    $(document).ready(function () {
+        loadData();
+    });
+    //Load Data function
+    function loadData() {
+        $.ajax({
+            url: "/ProjectManagement/ProjectNameList",
+            type: "GET",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                if (result.length == 0) {
+                    var html = '';
+                    html += '<tr>';
+                    html += '<td colspan="6">No Data...</td>';
+                    html += '</tr>';
+                    $('.tbody').html(html);
+                } else {
+
+                    var html = '';
+                    $.each(result, function (key, item) {
+                        html += '<tr id="contentrow">';
+                        html += '<td>' + item.Name + '</td>';
+                        html += '<td>' + item.StartDate + '</td>';
+                        html += '<td>' + item.TFSStatusLastUpdated + '</td>';
+                        html += '<td>' + item.TeamLead + '</td>';
+                        html += '<td>' + item.Language + '</td>';
+                        html += '<td class="td-actions"><a href="#" onclick="Delele(' + item.Id + ')"><i class="la la-trash delete"></i></a><a href="/ProjectManagement/EmployeesUnderProject"><i class="la la-bolt edit"></i></a></td>';
+                        html += '</tr>';
+                    });
+                    html += '<tr id="pagination" class="noprint" style="margin-top:40px"></tr>';
+                    $('.tbody').html(html);
+                }
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    //Add Data Function
+    function Add() {
+        var res = validate();
+        if (res == false) {
+            return false;
+        }
+        var res = validate1();
+        if (res == false) {
+            return false;
+        }
+        var res = validate2();
+        if (res == false) {
+            return false;
+        }
+        var res = validate3();
+        if (res == false) {
+            return false;
+        }
+        var res = validate4();
+        if (res == false) {
+            return false;
+        }
+        var empObj = {
+            Name: $('#Name').val(),
+            StartDate: $('#StartDate').val(),
+            Language: $('#Language').val(),
+            TFSStatusLastUpdated:$('#TFS').val(),
+            TeamLead:$('#TeamLead').val(),
+        };
+        $.ajax({
+            url: "/ProjectManagement/AddProjectName",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                loadData();
+                $('#myModal').modal('hide');
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    }
+    //function for deleting employee's record
+    function Delele(ID) {
+        var ans = confirm("Are you sure you want to delete this Record?");
+        if (ans) {
+            $.ajax({
+                url: "/ProjectManagement/DeleteProjectName/" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    loadData();
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+    //Function for clearing the textboxes
+    function clearTextBox() {
+        $('#Name').val("");
+        $('#StartDate').val("");
+        $('#TFS').val("");
+        $('#TeamLead').val("");
+        $('#Language').val("");
+        $('#btnAdd').show();
+        $('#Name').css('border-color', 'lightgrey');
+    }
+    //Valdidation using jquery
+    function validate() {
+        var isValid = true;
+        if ($('#Name').val().trim() == "") {
+            $('#Name').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#Name').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+    function validate1() {
+        var isValid = true;
+        if ($('#StartDate').val().trim() == "") {
+            $('#StartDate').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#StartDate').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+    function validate2() {
+        var isValid = true;
+        if ($('#Language').val().trim() == "") {
+            $('#Language').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#Language').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+    function validate3() {
+        var isValid = true;
+        if ($('#TFS').val().trim() == "") {
+            $('#TFS').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#TFS').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+    function validate4() {
+        var isValid = true;
+        if ($('#TeamLead').val().trim() == "") {
+            $('#TeamLead').css('border-color', 'Red');
+            isValid = false;
+        }
+        else {
+            $('#TeamLead').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+</script>
+
+
+

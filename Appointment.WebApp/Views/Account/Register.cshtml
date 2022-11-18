@@ -1,0 +1,121 @@
+﻿@model VUPayRoll.ViewModel.Account.SignUpViewModel
+@{
+    ViewBag.Title = "Register";
+}
+<div class="container-fluid no-padding h-100">
+    <div class="row flex-row h-100 bg-white">
+        <div class="col-xl-8 col-lg-6 col-md-5 no-padding">
+            <div class="elisyam-bg background-05">
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-7 my-auto no-padding">
+            <!-- Begin Form -->
+            <div class="authentication-form mx-auto">
+                <div class="logo-centered">
+                    <a href="db-default.html">
+                        <img src="~/Content/Images/logo.png" alt="logo" style="width:200px!important">
+                    </a>
+                </div>
+                <h3>Create An Account</h3>
+                <form action="/Account/Register" method="post">
+                    <div class="group material-input">
+                        <input type="text" required name="Username" id="Username" onblur="return chkblnk('Username','errorUserName')">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label id="errorUserName">User-Name</label>
+                    </div>
+                    <div class="group material-input">
+                        <input type="password" required name="Password" id="UserPassword" onblur="return chkblnk('UserPassword','errorUserPassword')">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label id="errorUserPassword">Password</label>
+                    </div>
+                    <div class="group material-input">
+                        <input type="password" required name="ConfirmPassword" id="rePassword" onblur="return passwordValidate()">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label id="errorUserrePassword">Confirm Password</label>
+                    </div>
+                    <div class="sign-btn text-center">
+                        <button type="submit" class="btn btn-lg btn-gradient-01">
+                            Create an account
+                        </button>
+                    </div>
+                </form>
+                <div class="register">
+                    Already have an account?
+                    <br>
+                    <a href="/Account/SignIn">Sign In</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function UserNameValidate(value) {
+        var response = $.ajax({
+            type: 'POST',
+            url: "/Account/UserNameExsist",
+            dataType: "json",
+            async: false,
+            data: { 'userName': value },
+            success: function (response) {
+                if (response.success) {
+                } else {
+                }
+            },
+            error: function (response) {
+            }
+        });
+        return response;
+    }
+    function chkblnk(eid, errid) {
+        var x = document.getElementById(eid).value;
+        var lbl = document.getElementById(errid).innerText;
+        if (eid == "UserPassword" && x.length < 6) {
+                document.getElementById(errid).innerHTML = lbl + " must be greater then 5";
+            }
+        if (eid == "Username") {
+            var response = UserNameValidate(x);
+                if (response.status == 200) {
+                     document.getElementById(errid).innerHTML = "";
+                }
+                else if(response.responseText.toLowerCase().indexOf('already exist') !== -1) {
+                    document.getElementById(eid).value = "";
+                    document.getElementById(errid).innerHTML = "'"+x +"' Already Exist";
+                }
+        }
+        else {
+                document.getElementById(errid).innerHTML = "";
+        }
+    }
+    function passwordValidate() {
+           var pas = $("#UserPassword");
+            var repas = $("#rePassword");
+            var rePassword = $("#errorUserrePassword");
+            var Password = $("#errorUserPassword");
+            if (pas.val() != '' && pas.val().length < 6) {
+                Password.text("Password must be greater then 5");
+                return false;
+            }
+           else if (pas.val() != '' && repas.val() != '' && pas.val() == repas.val()) {
+                rePassword.text("");
+                return true;
+            }
+            else if (pas.val() == '' && repas.val() == '') {
+                rePassword.text("");
+                return true;
+            }
+            else if (pas.val() != '' && repas.val() == '') {
+                rePassword.text("Re-type Password required");
+                return false;
+            }
+             
+            else {
+                pas.val('');
+                repas.val('');
+                rePassword.text("Password miss match");
+                return false;
+            }
+        }
+</script>

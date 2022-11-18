@@ -1,0 +1,159 @@
+﻿@{
+    var DaysInmonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+    var CurrentName = "";
+}
+<style>
+    #mySpan {
+        writing-mode: vertical-lr;
+        transform: rotate(180deg);
+    }
+</style>
+<style>
+    table {
+        width: 100%
+    }
+
+        table thead th {
+            color: #252946;
+            border: 1px solid gray;
+        }
+
+        table tbody tr td {
+            color: #252946;
+            border: 1px solid gray;
+        }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Attendance Report</h4>
+                    </div>
+                    <div class="widget-body">
+                        <table class="">
+                            <thead>
+                                <tr>
+                                    <th>EmpName</th>
+                                    <!--Loop all the days of month and print it-->
+                                    @for (var numb = 1; numb <= DaysInmonth; numb++)
+                                    {
+                                        <th>@numb</th>
+                                    }
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--Loop model-->
+                                @foreach (var emp in Model.OrderBy(a => a.EmployeeInfoId))
+                                {
+                                    //if Name is repeated, skip
+                                    if (CurrentName != emp.EmployeeInfo.FirstName)
+                                    {
+
+                                        // Set Name
+                                        CurrentName = emp.EmployeeInfo.FirstName;
+
+                                        <tr>
+                                            <td>@emp.EmployeeInfo.FirstName @emp.EmployeeInfo.LastName</td>
+
+                                            @for (var numb = 1; numb <= DaysInmonth; numb++)
+                                            {
+                                                <td>
+                                                    @{
+                                                        var GetThatDayValue = Model.Where(a => Convert.ToDateTime(a.Date).Day == numb && a.EmployeeInfoId == emp.EmployeeInfoId).FirstOrDefault();
+                                                        var DD = GetThatDayValue != null ? "✓" : "";
+                                                        <text> @DD </text>
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //$("#Month").on("change", function () {
+    //    var selected = $(this).val();
+
+    //    var data =
+    //    {
+    //        Id: selected
+    //    };
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Attendance/Report2",
+    //        data: JSON.stringify(data),
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (data) {
+
+    //            console.log(data);
+
+    //            if (data.length == 0) {
+    //                $('.tablebody').html('');
+    //                var rows;
+    //                rows = "<tr><td colspan='2' style='text-align:center;font-size:15px;font-weight:bold;'>No Attendance Taken...<span style='color:#252946'>Month No." + selected + "</span></td></tr>"
+    //                $('.tablebody').append(rows);
+
+    //            } else {
+    //                $('.tablebody').html('');
+    //                var rows;
+    //                rows = "<span style='color:#252946;font-weight:bold;'>Month No." + selected + "</span>";
+    //                $('.tablebody').append(rows);
+    //                $.each(data, function (i, item) {
+    //                    var WH = parseInt(item.TimeOut) - parseInt(item.TimeIn);
+    //                    rows = "<tr><th>Name</th><th>Date</th><th>Status</th><th>Working Hours</th></tr><tr><td>" + item.EmployeeInfo.FirstName + " " + item.EmployeeInfo.LastName + "</td><td>" + item.Date + "</td><td style='color:green'>✓</td><td>" + WH + "</td></tr>";
+    //                    $('.tablebody').append(rows);
+    //                });
+    //            }
+    //        }
+    //    });
+    //});
+</script>
+<script>
+
+    //$("#Date").on("change", function () {
+    //    var selected = $(this).val();
+    //    var data =
+    //    {
+    //        Date: selected
+    //    };
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "/Attendance/Report1",
+    //        data: JSON.stringify(data),
+    //        contentType: "application/json; charset=utf-8",
+    //        dataType: "json",
+    //        success: function (data) {
+    //            if (data.length == 0) {
+    //                $('.tablebody').html('');
+    //                var rows;
+    //                rows = "<tr><td colspan='2' style='text-align:center;font-size:15px;font-weight:bold;'>No Attendance Taken...<span style='color:#252946'>" + selected + "</span></td></tr>"
+    //                $('.tablebody').append(rows);
+
+    //            } else {
+    //                $('.tablebody').html('');
+    //                var rows;
+    //                rows = "<span style='color:#252946;font-weight:bold;'>" + selected + "</span><br>";
+    //                rows1 = "<tr><th>Name</th><th>Status</th><th>Working Hours</th></tr>";
+    //                $('.tablebody').append(rows);
+    //                $('.tablebody').append(rows1);
+    //                $.each(data, function (i, item) {
+    //                    var WH = parseInt(item.TimeOut) - parseInt(item.TimeIn);
+    //                    rows = "<tr><td>" + item.EmployeeInfo.FirstName + " " + item.EmployeeInfo.LastName + "</td><td style='color:green'>✓</td><td>" + WH + "</td></tr>";
+    //                    $('.tablebody').append(rows);
+    //                });
+    //            }
+    //        }
+    //    });
+    //});
+</script>

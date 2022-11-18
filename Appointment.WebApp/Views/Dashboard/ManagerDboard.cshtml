@@ -1,0 +1,506 @@
+﻿@model VUPayRoll.ViewModel.DashboardViewModel
+@{
+    ViewBag.Title = "ManagerDashboard";
+
+    var day = DateTime.Now.Day;
+    var month = DateTime.Now.Month;
+
+    var Title="";
+    var Body = "";
+    if (Model.Announcements.Count() == 0)
+    {
+        Title = "";
+        Body = "";
+    }
+    else
+    {
+        Title = Model.Announcements.FirstOrDefault().Title;
+        Body = Model.Announcements.FirstOrDefault().Body;
+    }
+
+}
+<link href="~/Content/Pagination/simplePagination.css" rel="stylesheet" />
+<script src="~/Content/Pagination/jquery.simplePagination.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content #myTable #contentrow");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content1 #myTable1 #contentrow1");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination1").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content2 #myTable2 #contentrow2");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination2").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content3 #myTable3 #contentrow3");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination3").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content4 #myTable4 #contentrow4");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination4").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+<script type="text/javascript">
+    jQuery(function ($) {
+        var items = $("#content5 #myTable5 #contentrow5");
+        var numItems = items.length;
+        var perPage = 2;
+        items.slice(perPage).hide();
+        $("#pagination5").pagination({
+            items: numItems,
+            itemsOnPage: perPage,
+            prevText: '<',
+            nextText: '>',
+            cssStyle: "light-theme",
+            onPageClick: function (pageNumber) {
+                var showFrom = perPage * (pageNumber - 1);
+                var showTo = showFrom + perPage;
+                items.hide()
+                    .slice(showFrom, showTo).show();
+            }
+        });
+    });
+</script>
+
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-6 col-md-6">
+                <div class="widget widget-34 has-shadow">
+                    <div class="widget">
+                        <div class="widget-header bordered no-actions">
+                            <h5><i class="la la-birthday-cake la-2x"></i>Alerts & Intimations</h5>
+                        </div>
+                        <div class="widget-body">
+                            <table class="table table-hover mb-0 text-center">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            Name
+                                        </th>
+                                        <th scope="col">
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.Employees)
+                                    {
+                                        var EmpDay = item.DOB.GetValueOrDefault().Day;
+                                        var EmpMonth = item.DOB.GetValueOrDefault().Month;
+
+                                        if (EmpDay == day && EmpMonth == month)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <span style="width:100px;">
+                                                        <span class="badge-text badge-text-small info">
+                                                            <i class="la la-birthday-cake"></i>
+                                                            @item.FirstName @item.LastName
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @item.DOB.GetValueOrDefault().Date.ToShortDateString()
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6">
+                <div class="widget widget-34 has-shadow">
+                    <div class="widget">
+                        <div class="widget-header bordered no-actions">
+                            <h5> <i class="la la-chain la-2x"></i> Attendance Approval (s)</h5>
+                        </div>
+                        <div class="widget-body">
+                            <table class="table table-hover mb-0" id="content4">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            User-Name
+                                        </th>
+                                        <th>
+                                            Attentance Type
+                                        </th>
+                                        <th>
+                                            In-Date
+                                        </th>
+                                        <th>
+                                            Out-Date
+                                        </th>
+                                        <th>
+                                            In-Time
+                                        </th>
+                                        <th>
+                                            Out-Time
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="myTable4">
+                                    @if (Model.Attendances.Count() == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="6" style="text-align:center;font-size:12px;font-weight:bold;">
+                                                No Data...
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in Model.Attendances)
+                                        {
+                                            <tr id="contentrow4" onclick="ShowModalForAttendance(@item.Id)" style="cursor:pointer">
+                                                <td>
+                                                    <span style="width:100px;">
+                                                        <span class="badge-text badge-text-small info">
+                                                            @item.User.Username.ToUpper()
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @item.AttentanceType.ToString()
+                                                </td>
+                                                <td>
+                                                    @item.InDate.Date.ToShortDateString()
+                                                </td>
+                                                @if (!item.OutDate.HasValue)
+                                                {
+                                                    <td>-</td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        Hi
+                                                    </td>
+                                                }
+                                                <td>
+                                                    @item.InTime.ToShortTimeString()
+                                                </td>
+                                                <td>
+                                                    @item.OutTime.ToShortTimeString()
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="widget-footer d-flex align-items-center">
+                            <div id="pagination4" class="noprint"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-md-6">
+                <div class="widget widget-34 has-shadow">
+                    <div class="widget">
+                        <div class="widget-header bordered no-actions">
+                            <h5> <i class="la la-chain la-2x"></i> Leave Approval (s)</h5>
+                        </div>
+                        <div class="widget-body">
+                            <table class="table table-hover mb-0" id="content1">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            User-Name
+                                        </th>
+                                        <th scope="col">
+                                            Leave Type
+                                        </th>
+                                        <th>
+                                            Short Leave
+                                        </th>
+                                        <th>
+                                            Date
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="myTable1">
+                                    @if (Model.leaves.Count() == 0)
+                                    {
+                                        <tr>
+                                            <td colspan="4" style="text-align:center;font-size:12px;font-weight:bold;">
+                                                No Data...
+                                            </td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in Model.leaves)
+                                        {
+                                            <tr id="contentrow1" onclick="ShowModal(@item.Id)" style="cursor:pointer">
+                                                <td>
+                                                    <span style="width:100px;">
+                                                        <span class="badge-text badge-text-small info">
+                                                            @item.User.Username.ToUpper()
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    @item.LeaveType.ToString()
+                                                </td>
+                                                <td>
+                                                    @item.LeaveStatus.ToString()
+                                                </td>
+                                                @if (item.LeaveStatus.ToString() == "Yes")
+                                                {
+                                                    <td>
+                                                        @item.Date.GetValueOrDefault().Date.ToShortDateString()-(@item.LeavehfDay.GetValueOrDefault().ToString())
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td>
+                                                        @item.DateRange
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="widget-footer d-flex align-items-center">
+                            <div id="pagination1" class="noprint"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-centered" class="modal fade">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Leave Detail</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover mb-0" id="content1">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tablebody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-shadow" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modal-centered" class="modal fade AttendanceModal">
+    <div class="modal-dialog  modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Attendance Detail</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Remarks</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="tablebodyforAttendance">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-shadow" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Approved(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Account/Approved",
+            data:
+            {
+                id: Id
+            },
+            success: function (result) {
+                $(".myButton_" + Id).html("Approved");
+            }
+        });
+    }
+</script>
+<script>
+    function LeaveApproved(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Leave/Approved",
+            data:
+            {
+                id: Id
+            },
+            success: function (result) {
+                $(".LeaveButton_" + Id).html("Approved");
+            }
+        });
+    }
+</script>
+<script>
+    function ShowModal(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Leave/GetLeaveDetail",
+            data:
+            {
+                Id: Id
+            },
+            success: function (result) {
+                $('.tablebody').html('');
+                var rows;
+                if (result.IsApproved == true) {
+                    rows = "<tr><td>" + result.Description + "</td><td><button type='button' class='btn btn-shadow btn-sm'>Approved</button></td></tr>";
+                    $('.tablebody').append(rows);
+                } else {
+                    rows = "<tr><td>" + result.Description + "</td><td><button type='button' class='btn btn-shadow mr-1 mb-2 btn-sm LeaveButton_" + result.Id + "' onclick='LeaveApproved(" + result.Id + ")' id='LeaveButton'>Click to Approve</button></td></tr>"
+                    $('.tablebody').append(rows);
+                }
+                $('#modal-centered').modal('show');
+            }
+        });
+    }
+</script>
+<script>
+    function ShowModalForAttendance(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Attendance/GetAttendanceDetail",
+            data:
+            {
+                Id: Id
+            },
+            success: function (result) {
+                $('.tablebodyforAttendance').html('');
+                var rows;
+                if (result.IsApproved == true) {
+                    rows = "<tr><td>" + result.Remarks + "</td><td><button type='button' class='btn btn-shadow btn-sm'>Approved</button></td></tr>";
+                    $('.tablebodyforAttendance').append(rows);
+                } else {
+                    rows = "<tr><td>" + result.Remarks + "</td><td><button type='button' class='btn btn-shadow mr-1 mb-2 btn-sm AttendanceButton_" + result.Id + "' onclick='AttendanceApproved(" + result.Id + ")' id='AttendanceButton'>Click to Approve</button></td></tr>"
+                    $('.tablebodyforAttendance').append(rows);
+                }
+                $('.AttendanceModal').modal('show');
+            }
+        });
+    }
+</script>
+<script>
+    function AttendanceApproved(Id) {
+        $.ajax({
+            type: "POST",
+            url: "/Attendance/Approved",
+            data:
+            {
+                id: Id
+            },
+            success: function (result) {
+                $(".AttendanceButton_" + Id).html("Approved");
+            }
+        });
+    }
+</script>

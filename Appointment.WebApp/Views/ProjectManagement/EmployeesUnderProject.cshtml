@@ -1,0 +1,70 @@
+﻿@{
+    ViewBag.Title = "EmployeesUnderProject";
+}
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Assign Projects</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" id="clear" name="myForm">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Select Project</label>
+                                        <select class="form-control selectpicker show-menu-arrow" id="Projects" name="Projects" required data-live-search="true">
+                                            <option value="0" selected disabled>--Select Project--</option>
+                                            @foreach (var item in ViewBag.projectName)
+                                            {
+                                                <option value="@item.Id">@item.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label>Select Employee</label>
+                                        <select class="form-control selectpicker show-menu-arrow" id="Employee" name="EmployeeInfoId" multiple required data-live-search="true">
+                                            @foreach (var item in ViewBag.employeeinfo)
+                                            {
+                                                <option value="@item.Id">@item.FirstName @item.LastName</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="em-separator separator-dashed"></div>
+                            <div class="btn-group" role="group" aria-label="Buttons Group">
+                                <button type="button" class="btn btn-primary mb-2" id="btnSave" name="save">Save</button>
+                                <button type="button" class="btn btn-danger mb-2" onclick="window.location.href='/ProjectManagement/ProjectNameManage'">Back</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#btnSave").click(function (e) {
+
+        var Proj = $('#Projects').val();
+        var empids = $('#Employee').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/ProjectManagement/Create_Projects",
+            data:
+            {
+                Project: Proj,
+                Employees: empids
+            },
+            success: function () {
+                window.location.href ='/ProjectManagement/ProjectManage';
+            }
+        });
+    });
+</script>

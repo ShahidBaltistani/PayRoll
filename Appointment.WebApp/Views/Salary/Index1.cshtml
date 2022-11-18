@@ -1,0 +1,125 @@
+﻿@model VUPayRoll.ViewModel.SalaryViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+</script>
+<style>
+</style>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>Salary</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" method="post" action="OverAll">
+                            <input type="text" id="Allowance" name="Allowance" class="form-control" hidden />
+                            <input type="text" id="bs" name="BasicSalary" class="form-control" hidden />
+                            <input type="text" id="days" name="Days" class="form-control" hidden />
+                            <input type="text" id="ts" name="Salary" class="form-control" hidden />
+                            @Html.AntiForgeryToken()
+                            <div class="form-group row">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label>Select Employee</label>
+                                                <select class="form-control selectpicker show-menu-arrow" id="Employee" name="EmployeeInfoId">
+                                                    <option value="0" selected disabled>--Select Employee--</option>
+                                                    @foreach (var item in ViewBag.employeeinfo)
+                                                    {
+                                                        <option value="@item.Id">@item.FirstName @item.LastName</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label>From Date</label>
+                                                <input type="date" id="fromdate" name="FromDate" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                <label>To Date</label>
+                                                <input type="date" id="todate" name="ToDate" class="form-control" required/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="em-separator separator-dashed"></div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-gradient-01">Generate</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="div3" style="display:none">
+</div>
+<input id="HiddenEmployeeId" value="" hidden />
+
+<script>
+    $("#Employee").change(function () {
+        var selected_option = $('#Employee').val();
+        $.ajax({
+            type: 'POST',
+            url: "/Salary/GetAllowancedata",
+            data: { Id: selected_option },
+        })
+            .done(function (data) {
+                var bs = data[0].EmployeeInfo.BasicSalary;
+                var EmployeeID = data[0].EmployeeInfo.ID;
+                $("#HiddenEmployeeId").val(EmployeeID);
+
+                $("#div3").html('');
+                var div3Content = '';
+                for (var i = 0; i < data.length; i++) {
+                    div3Content += '<p class="Allowanceslist">' + data[i].Allowance.Name + "--" + data[i].Amount + '</p>';
+                }
+                $("#div3").append(div3Content);
+                var ek = [];
+                $('.Allowanceslist').each(function () { ek.push($(this).html()); });
+                var Allowance = ek.join(", ");
+                $("#Allowance").val(Allowance);
+                $("#bs").val(bs);
+            })
+
+
+        //For Fields Clearance
+        $('#fromdate').val('');
+        $('#todate').val('');
+        $('#days').val('');
+        $('#ts').val('');
+
+    })
+    $("#fromdate").change(function () {
+        $('#todate').val('');
+        $('#days').val('');
+        $('#ts').val('');
+    })
+    $("#todate").change(function () {
+        var startDate = $('#fromdate').val();
+        var endDate = $('#todate').val();
+        var start = new Date(startDate);
+        var end = new Date(endDate);
+        days = (end - start) / (1000 * 60 * 60 * 24);
+        $('#days').text(Math.round(days));
+        var Onedaysalary = ($("#bs").val()) / 30;
+        var salary1 = (Math.round(Onedaysalary)) * days;
+        $("#days").val(days);
+        $("#ts").val(salary1 + "/-");
+    })
+</script>

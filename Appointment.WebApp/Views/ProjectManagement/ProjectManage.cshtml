@@ -1,0 +1,242 @@
+﻿@model VUPayRoll.ViewModel.ProjectsTasks
+@{
+    ViewBag.Title = "ProjectManage";
+    var test = 0;
+}
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <span style="width:100px;">
+                            <span class="badge-text badge-text-small info">
+                                <a href="/ProjectManagement/ProjectNameManage" style="color:white">Project_Management</a>
+                            </span>
+                        </span>
+                        <br /><br />
+                        <table class="table table-hover table-bordered mb-2" id="content">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Project Name
+                                    </th>
+                                    <th>
+                                        Last_TFS_Status
+                                    </th>
+                                    <th>
+                                        Employee's
+                                    </th>
+                                    <th colspan="4">
+                                        Assign Task
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="myTable">
+                                @if (Model.Projects.Count() == 0)
+                                {
+                                    <tr style="border:none">
+                                        <td colspan="5" class="text-center bold" style="font-size:12px;">
+                                            No Data...
+                                        </td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model.Projects)
+                                    {
+                                        <tr>
+                                            @if (test != item.ProjectNameId)
+                                            {
+                                                <td>
+                                                    <b>
+                                                        @item.ProjectName.Name
+                                                    </b>
+                                                </td>
+                                                <td>
+                                                    @item.ProjectName.TFSStatusLastUpdated
+                                                </td>
+                                                test = item.ProjectNameId;
+                                            }
+                                            else
+                                            {
+                                                <td colspan="2">
+                                                </td>
+                                            }
+                                            <td>
+                                                <a href="@Url.Action("GetEmpDetail","EmployeeInfo",new { id = item.EmployeeId})">
+                                                    <b>@item.Employee.FirstName.ToUpper()&nbsp;@item.Employee.LastName.ToUpper()</b>
+                                                </a>
+                                            </td>
+                                            <td style="width:15%;background-color:white;border-right:none" id="Task1">
+                                                <div class="form-group" style="padding-top:14px;">
+                                                    <select class="custom-select form-control" name="Task1" required data-live-search="true">
+                                                        <option selected disabled>--Type--</option>
+                                                        @foreach (var item1 in ViewBag.tasktype)
+                                                        {
+                                                            <option value="@item1.Id">@item1.Name</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                            </td>
+                                            <td colspan="2" style="width:20%;background-color:white;border-right:none;border-left:none" id="Description">
+                                                <textarea rows="1" placeholder="Description" type="text" class="form-control"></textarea>
+                                            </td>
+                                            <td style="border-left:none;background-color:white;">
+                                                <i style="cursor:pointer;color:Highlight" class="btn1 la la-plus" onclick="Task1(@item.EmployeeId,@item.ProjectNameId)"></i>
+                                            </td>
+                                        </tr>
+                                        foreach (var item1 in Model.Tasks)
+                                        {
+                                            if (item.ProjectNameId == item1.ProjId && item.EmployeeId == item1.EmpId)
+                                            {
+                                                <tr>
+                                                    <td colspan="3"></td>
+                                                    <td>
+                                                        <b>@item1.TaskType.ToString()</b>
+                                                    </td>
+                                                    <td>
+                                                        @item1.Description
+                                                    </td>
+                                                    <td>
+                                                        @item1.CreatedDate.GetValueOrDefault().ToShortDateString()
+                                                    </td>
+                                                    <td>
+                                                        <i class="la la-times" style="color:red;cursor:pointer" onclick="Task(@item1.Id,@item1.EmpId, @item1.ProjId)"></i>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    //function for deleting employee's record
+    function Delele(ID) {
+        var ans = confirm("Are you sure you want to delete this Record?");
+        if (ans) {
+            $.ajax({
+                url: "/ProjectManagement/DeleteProject/?PId=" + ID,
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    location.reload(true);
+                    window.Location.url = "/ProjectManagement/ProjectManage/";
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<script>
+    function Task(PrimaryKey,EmployeeId, ProjectNameId) {
+        var ans = confirm("Are you sure you want to delete this Task ?");
+
+        var empObj = {
+            Id:PrimaryKey,
+            PId: ProjectNameId,
+            EmpId: EmployeeId,
+        };
+
+        if (ans) {
+            $.ajax({
+                url: "/ProjectManagement/DeleteTask",
+                data: JSON.stringify(empObj),
+                type: "POST",
+                contentType: "application/json;charset=UTF-8",
+                dataType: "json",
+                success: function (result) {
+                    location.reload(true);
+                },
+                error: function (errormessage) {
+                    alert(errormessage.responseText);
+                }
+            });
+        }
+    }
+</script>
+<div id="success-modal" class="modal fade" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <div class="sa-icon sa-success animate" style="display: block;">
+                    <span class="sa-line sa-tip animateSuccessTip"></span>
+                    <span class="sa-line sa-long animateSuccessLong"></span>
+                    <div class="sa-placeholder"></div>
+                    <div class="sa-fix"></div>
+                </div>
+                <div class="section-title mt-5 mb-2">
+                    <h2 class="text-gradient-02">Thank you!</h2>
+                </div>
+                <p class="mb-5">Task Assigned successfully</p>
+                <button type="button" class="btn btn-shadow mb-3" data-dismiss="modal" onclick="location.reload(true);">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function Task1(EmployeeId, ProjectNameId) {
+        // Store
+        localStorage.setItem("EmployeeId", EmployeeId);
+        localStorage.setItem("ProjectNameId", ProjectNameId);
+    }
+    $(".btn1").click(function () {
+        var item = $(this).closest("tr");
+
+
+        var item1 = item.find("#Task1");
+        var val = item1.find("select").val();
+
+
+        var item2 = item.find("#Description");
+        var val1 = item2.find("textarea").val();
+
+        // Get
+        var EmployeeId=localStorage.getItem("EmployeeId");
+        var ProjectNameId = localStorage.getItem("ProjectNameId");
+
+
+
+
+        if (val == null) {
+            alert("Please Select Task...");
+            return false;
+        }
+        if (val1 == '') {
+            alert("Please Select Description...");
+            return false;
+        }
+
+        var empObj = {
+            PId: ProjectNameId,
+            EmpId: EmployeeId,
+            Task: val,
+            Description: val1
+        };
+        $.ajax({
+            url: "/ProjectManagement/EmployeeTask",
+            data: JSON.stringify(empObj),
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (result) {
+                //$('#success-modal').modal('show');
+                //$('#success-modal').modal({backdrop: 'static', keyboard: false}) 
+                location.reload(true); 
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+    });
+</script>

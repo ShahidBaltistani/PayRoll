@@ -1,0 +1,50 @@
+﻿@model VUPayRoll.ViewModel.Account.LoginViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!-- Begin Container -->
+<div class="container-fluid no-padding h-100">
+    <div class="row flex-row h-100 bg-white">
+        <!-- Begin Left Content -->
+        <div class="col-xl-8 col-lg-6 col-md-5 no-padding">
+            <div class="elisyam-bg background-05">
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-6 col-md-7 my-auto no-padding">
+            <div class="authentication-form mx-auto">
+                <div class="logo-centered">
+                    <a href="db-default.html">
+                        <img src="~/Content/Images/logo.png" alt="logo" style="width:200px!important">
+                    </a>
+                </div>
+                <h3>Sign In To VU_PayRoll</h3>
+                <form action="/Account/SignIn" method="post" autocomplete="off">
+                    <div class="group material-input">
+                        <input type="text" required name="Username">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>User-Name</label>
+                    </div>
+                    <div class="group material-input">
+                        <input type="password" required name="Password">
+                        <span class="highlight"></span>
+                        <span class="bar"></span>
+                        <label>Password</label>
+                    </div>
+                    <div class="sign-btn text-center">
+                        <button type="submit" class="btn btn-lg btn-gradient-01">
+                            Sign in
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="register">
+                    Don't have an account?
+                    <br>
+                    <a href="/Account/Register">Create an account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

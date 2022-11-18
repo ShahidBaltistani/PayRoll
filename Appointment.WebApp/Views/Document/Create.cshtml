@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Add-Document";
+}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-header bordered no-actions d-flex align-items-center">
+                        <h4>DOCUMENTS</h4>
+                    </div>
+                    <div class="widget-body">
+                        <form autocomplete="off" method="post" action="Create" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <input value="@ViewBag.EmployeeId" name="EmployeeInfoId" hidden />
+                                        <div class="col-sm-4">
+                                            <label>File_ (<small>Only images and pdf files</small>)</label>
+                                            <br />
+                                            <input type="file" id="SelectFile" name="file" required />
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Description</label>
+                                                <textarea rows="1" placeholder="Description" type="text" class="form-control clear" id="Description" name="Description" required></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="em-separator separator-dashed"></div>
+                                    <div class="text-right">
+                                        <button class="btn btn-gradient-01" type="submit">Next </button>
+                                        <button class="btn btn-shadow" onclick="window.location.href='/Document/Documents/@ViewBag.EmployeeId'">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

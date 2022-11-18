@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>VU-PayRoll_@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="../ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <link rel="icon" type="image/png" sizes="16x16" href="">
+    <link rel="stylesheet" href="~/assets/vendors/css/base/bootstrap.min.css">
+    <link rel="stylesheet" href="~/assets/vendors/css/base/elisyam-1.8.min.css">
+    <link rel="stylesheet" href="~/assets/css/animate/animate.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl-carousel/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/assets/css/owl-carousel/owl.theme.min.css">
+    <link rel="stylesheet" href="~/assets/css/leaflet/leaflet.min.css">
+    <link rel="stylesheet" href="~/assets/css/bootstrap-select/bootstrap-select.min.css">
+    <link rel="stylesheet" href="~/assets/css/datatables/datatables.min.css">
+
+    <link href="~/Content/DatePicker/dp.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    @if (User.Identity.IsAuthenticated && Session["UserId"] != null)
+    {
+        <script type="text/javascript">
+            var loginUrl='@Url.Action("Logout", "Account")';
+            var extendMethodUrl='@Url.Action("ExtendSession","Account")';
+            $(document).ready(function(){
+                SessionTimeout.schedulePopup();
+            });
+
+            window.SessionTimeout = (function() {
+            var _timeLeft, _popupTimer, _countDownTimer;
+            var stopTimers = function() {
+                window.clearTimeout(_popupTimer);
+                window.clearTimeout(_countDownTimer);
+            };
+            var updateCountDown = function() {
+                var min = Math.floor(_timeLeft / 60);
+                var sec = _timeLeft % 60;
+                if(sec < 10)
+                    sec = "0" + sec;
+
+                document.getElementById("CountDownHolder").innerHTML = min + ":" + sec;
+
+                if(_timeLeft > 0) {
+                    _timeLeft--;
+                    _countDownTimer = window.setTimeout(updateCountDown, 1000);
+                } else  {
+                    document.location = loginUrl;
+                }
+            };
+            var showPopup = function() {
+            $("#divPopupTimeOut").modal("show");
+                _timeLeft = 120;
+                updateCountDown();
+            };
+            var schedulePopup = function() {
+            $("#divPopupTimeOut").modal("hide");
+                stopTimers();
+                _popupTimer = window.setTimeout(showPopup, @PopupShowDelay);
+            };
+            var hidePopup=function(){
+            $("#divPopupTimeOut").modal("hide");
+            };
+            var sendKeepAlive = function() {
+                stopTimers();
+                $("#divPopupTimeOut").modal("hide");
+                $.ajax({
+                    type: "GET",
+                    url: extendMethodUrl,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function successFunc(response) {
+                        SessionTimeout.schedulePopup();
+                    },
+                    error:function(){
+                    }
+                });
+            };
+            return {
+                schedulePopup: schedulePopup,
+                sendKeepAlive: sendKeepAlive,
+                hidePopup:hidePopup,
+                stopTimers:stopTimers,
+            };
+
+            })();
+
+        </script>
+        @functions {
+            public int PopupShowDelay
+            {
+                get
+                {
+                    return 1000 * (Convert.ToInt32(FormsAuthentication.Timeout.TotalSeconds) - 130);
+                }
+            }
+        }
+    }
+</head>
+<body>
+    <div id="divPopupTimeOut" class="modal modal-top fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Session TimeOut (<b><span id="CountDownHolder"></span></b>)</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Your Session will about to expire.
+                    </p>
+                    <p>
+                        Click OK to continue your session.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-shadow" onclick="SessionTimeout.hidePopup();">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="SessionTimeout.sendKeepAlive();">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (User.Identity.IsAuthenticated && Session["UserId"] != null)
+    {
+        <div id="preloader">
+            <div class="canvas">
+                <img src="~/Content/Images/vu.png" alt="logo" class="loader-logo" style="width:80px">
+                <div class="spinner"></div>
+            </div>
+        </div>
+        <div class="page bg-2 rounded-widget">
+            <header class="header">
+                <nav class="navbar fixed-top">
+                    <div class="search-box">
+                        <button class="dismiss"><i class="ion-close-round"></i></button>
+                        <form id="searchForm" action="#" role="search">
+                            <input type="search" placeholder="Search something ..." class="form-control">
+                        </form>
+                    </div>
+                    <div class="navbar-holder d-flex align-items-center align-middle justify-content-between">
+                        <div class="navbar-header">
+                            <a href="/Dashboard/Dboard" class="navbar-brand">
+                                <div class="brand-image brand-big">
+                                    <img src="~/Content/Images/logo.png" alt="logo" class="logo-big" style="width:200px">
+                                </div>
+                                <div class="brand-image brand-small">
+                                    <img src="~/Content/Images/logo.png" alt="logo" class="logo-small" style="width:200px">
+                                </div>
+                            </a>
+                            <a id="toggle-btn" href="#" class="menu-btn active">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </a>
+                        </div>
+                        <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center pull-right">
+                            <li class="nav-item dropdown">
+                                <a id="user" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link"><img src="~/Content/Images/fuser.png" alt="..." id="navbarimage" class="avatar rounded-circle"></a>
+                                <ul aria-labelledby="user" class="user-size dropdown-menu">
+                                    <li class="welcome">
+                                        <a href="/Home/Employees" class="edit-profil"><i class="la la-gear"></i></a>
+                                        <img src="~/Content/Images/fuser.png" id="insidenavbarimage" alt="..." class="rounded-circle">
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item text-center">
+                                            <b>
+                                                @Session["UserModel"].ToString().ToUpper()
+                                            </b>
+                                        </a>
+                                    </li>
+                                    <li class="separator"></li>
+                                    <li><a rel="nofollow" href="/Account/Logout" class="dropdown-item logout text-center"><i class="ti-power-off"></i></a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+        </div>
+        <div class="page-content d-flex align-items-stretch">
+            <div class="compact-light-sidebar has-shadow">
+                <nav class="side-navbar box-scroll sidebar-scroll">
+                    <ul class="list-unstyled">
+                        @if (User.Identity.IsAuthenticated && Session["Role"] != null && Session["Role"].ToString() == "1")
+                        {
+                            <li><a href="/Dashboard/Dboard"><i class="la la-columns"></i>Dashboard</a></li>
+                            <li><a href="/Home/Employees"><i class="la la-users"></i>Employees</a></li>
+                            <li><a href="/ProfileManagement/ProfileManage"><i class="la la-user"></i>Profile Management</a></li>
+                            <li><a href="/ProjectManagement/ProjectManage"><i class="la la-bookmark"></i>Project Management</a></li>
+                            <li><a href="/Home/EmployeesSalaryStatus"><i class="la la-asterisk"></i>Employee's Status</a></li>
+                            <li><a href="/Team/TeamList"><i class="la la-object-group"></i>Grouping</a></li>
+                            <li><a href="/Salary/Index1"><i class="la la-money"></i>Salary Generation</a></li>
+                            <li><a href="/Announcement/Announces"><i class="la la-microphone"></i>Announcement</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="/Dashboard/Dboard"><i class="la la-columns"></i>Dashboard</a></li>
+                            <li><a href="/Home/Employees"><i class="la la-user"></i>Profile</a></li>
+                            <li><a href="/Leave/Apply"><i class="la la-bed"></i>Leave</a></li>
+                            <li><a href="/Attendance/A_Apply"><i class="la la-thumbs-o-up"></i>Attendance</a></li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    }
+    <div class="body-content">
+        @RenderBody()
+    </div>
+    <script src="~/assets/vendors/js/base/jquery.min.js"></script>
+    <script src="~/assets/vendors/js/base/core.min.js"></script>
+    <script src="~/assets/vendors/js/nicescroll/nicescroll.min.js"></script>
+    <script src="~/assets/vendors/js/noty/noty.min.js"></script>
+    <script src="~/assets/vendors/js/chart/chart.min.js"></script>
+    <script src="~/assets/vendors/js/owl-carousel/owl.carousel.min.js"></script>
+    <script src="~/assets/vendors/js/calendar/moment.min.js"></script>
+    <script src="~/assets/vendors/js/calendar/fullcalendar.min.js"></script>
+    <script src="~/assets/vendors/js/leaflet/leaflet.min.js"></script>
+    <script src="~/assets/vendors/js/app/app.min.js"></script>
+    <script src="~/assets/vendors/js/bootstrap-select/bootstrap-select.min.js"></script>
+    <script src="~/assets/vendors/js/datepicker/daterangepicker.js"></script>
+    <script src="~/assets/js/components/datepicker/datepicker.js"></script>
+
+    
+</body>
+</html>

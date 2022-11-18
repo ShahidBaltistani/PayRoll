@@ -1,0 +1,53 @@
+﻿@model VUPayRoll.ViewModel.SalaryViewModel
+@{
+    ViewBag.Title = "Salary Detail";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content-inner compact">
+    <div class="container-fluid">
+        <div class="row flex-row">
+            <div class="col-xl-12">
+                <div class="widget has-shadow">
+                    <div class="widget-body">
+                        <div class="widget-header bordered no-actions d-flex align-items-center">
+                            <h4>Salary-Slip Detail</h4>
+                        </div>
+                        <table class="table" id="content">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Allowance</th>
+                                    <th scope="col">FromDate</th>
+                                    <th scope="col">ToDate</th>
+                                    <th scope="col">Days</th>
+                                    <th scope="col">BasicSalary</th>
+                                    <th scope="col">Total Salary</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="myTable">
+                                <tr>
+                                    <td>@Model.Employee.FirstName @Model.Employee.LastName</td>
+                                    <td>@Model.Allowance</td>
+                                    <td>@Model.FromDate</td>
+                                    <td>@Model.ToDate</td>
+                                    <td>@Model.Days</td>
+                                    <td>@Model.BasicSalary</td>
+                                    <td>@Model.TotalSalary</td>
+                                    <td>
+                                        <a href="@Url.Action("SalarySlip","Salary",new { Id = Model.EmployeeId})" style="text-decoration:none;color:cornflowerblue">
+                                            <span class="la la-file-pdf-o mx-2" data-toggle="tooltip" data-placement="top" title="Detail"></span>
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr id="pagination" class="noprint" style="margin-top:40px"></tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                        
